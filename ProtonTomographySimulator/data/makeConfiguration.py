@@ -87,13 +87,15 @@ if __name__=='__main__':
             theLayer['ySizeLayer'] = 20.0
             theLayer['zSizeLayer'] = 1.0
             theFibers = []
-            NFibers = 21
+            NFibers = 27
+            FiberPitch = 0.725 # cm; fiber outer diameter = 2 * (claddingRadius + jacket 0.01 cm)
             FiberZsize = 0.8
             FiberXsize = 0.8
             FiberYsize = theLayer['ySizeLayer']
-            step = FiberYsize / NFibers
+            # Layers measuring the same axis (0-2 and 1-3) are offset by half a fiber pitch to avoid gaps in the coverage
+            shift = -FiberPitch / 4.0 if i < 2 else FiberPitch / 4.0
             for j in range(NFibers):
-                xfiber = -theLayer['xSizeLayer']/2.0 + (j+0.5) * step #Para que la fibra no se escape de la capa EN ESTA CONFIGURACIÓN
+                xfiber = (j - (NFibers - 1) / 2.0) * FiberPitch + shift
                 yfiber = 0.0
                 zfiber = 0.0
                 theFiber = copy.copy(fiber)

@@ -3,11 +3,12 @@
 //   <prefix>_truth.csv      : one row per event (proton)
 //   <prefix>_hits_truth.csv : one row per fiber crossed by the primary proton (Monte Carlo truth)
 //   <prefix>_channels.csv   : channel -> (det, layer, fiber, side) map
-// channel = (layer * NFibers + fiber) * 2 + (side > 0 ? 1 : 0), so 8 layers x 21 fibers x 2 ends = 336 channels.
+// channel = (layer * NFibers + fiber) * 2 + (side > 0 ? 1 : 0), so 8 layers x 27 fibers x 2 ends = 432 channels.
 // All times are relative to the first hit of the event + tOffset.
 //
 // Usage: root -l -b -q 'exportArr.C+("out.root", "bridge/all_000", firstEvent, nEvents)'
-// Then:  nanowire_detector_stage7.py convert --prefix bridge/all_000 --dt-ns 0.005 --tmax-ns 20 --channels 336
+// Then:  nanowire_detector_stage7.py convert --prefix bridge/all_000 --dt-ns 0.005 --tmax-ns 20 --channels 432
+// CUIDADO CON LA RAM
 
 #include <map>
 #include <cstdio>
@@ -19,7 +20,7 @@
 #include "TString.h"
 
 const int NLayers = 8;
-const int NFibers = 21;
+const int NFibers = 27;
 const int NChannels = NLayers * NFibers * 2;   // 2 ends per fiber
 
 // Each fiber end of the device gets a fixed channel number, the same in every event
