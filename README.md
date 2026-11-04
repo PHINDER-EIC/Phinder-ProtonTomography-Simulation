@@ -290,14 +290,15 @@ supports at most **1000 fibers per layer** and **100 layers**.
 - 300 × 300 × 300 cm world.
 - One bone phantom: a cylinder of radius 10 cm and length 10 cm, centered at the origin, with its
   axis along z (parallel to the beam).
-- Two 80 × 80 × 15 cm detectors at `z = +25 cm` (upstream of the phantom; the beam travels
+- Two 20 × 20 × 15 cm detectors at `z = +25 cm` (upstream of the phantom; the beam travels
   towards −z) and `z = −25 cm` (downstream).
-- Each detector has 4 layers of 80 × 80 × 1 cm at local z = 5.5, 4.5, −4.5, −5.5 cm, with
+- Each detector has 4 layers of 20 × 20 × 1 cm at local z = 5.5, 4.5, −4.5, −5.5 cm, with
   alternating z rotation 90° / 0°, so that fibers run alternately along *x* and *y* (two X-Y
   planes per detector, 9 cm apart).
-- 21 fibers per layer, spaced 80/21 ≈ 3.8 cm apart, 80 cm long (`length = 40`), with an EJ-204
+- 27 fibers per layer, spaced 27/20 ≈ 0.74 cm apart, 20 cm long (`length = 10`), with an EJ-204
   core of radius 0.25 cm and PMMA cladding up to 0.35 cm. `xDirSensor = 90` rotates the fiber
-  axis (local z) so it lies in the plane of the layer.
+  axis (local z) so it lies in the plane of the layer. All fibers are together and there are no
+  gaps between them.
 
 ### Changing the geometry
 
