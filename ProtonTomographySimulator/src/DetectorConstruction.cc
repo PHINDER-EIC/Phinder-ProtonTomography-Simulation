@@ -196,7 +196,6 @@ void DetectorConstruction::ConstructMaterials() {
     materials.insert(std::pair<G4String, G4Material *>("EJ204", EJ204));
 
 
-
     // Cladding: PMMA (plexiglass) (Not scintillating; refractive index lower than the core to ensure total internal reflection)
     G4Material* clad = man->FindOrBuildMaterial("G4_PLEXIGLASS");
     auto* cladMPT = new G4MaterialPropertiesTable();

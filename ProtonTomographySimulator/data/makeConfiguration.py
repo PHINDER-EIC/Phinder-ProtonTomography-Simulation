@@ -60,7 +60,7 @@ if __name__=='__main__':
     photons['killPhotons'] = False # true = Photon is stored in the stack when it is created, false = Same as true, but the photon propagates until it is absorbed. ntuple only stores the information at the time the photon is created in both cases. false may be useful if there is a detector at the end of the scintillating fibers, or to make the visualization more realistic.
     #Modify the detectors
     theDetectors = []
-    zPos = [25, -25]
+    zPos = [30, -30]
     for z in zPos:
         theDet = copy.copy(detector)
         theDet['xPosDetector'] = 0.0
@@ -71,9 +71,9 @@ if __name__=='__main__':
         theDet['xPosDetector'] = 0.0
         theDet['xSizeDetector'] = 20.0
         theDet['ySizeDetector'] = 20.0
-        theDet['zSizeDetector'] = 15.0
+        theDet['zSizeDetector'] = 25.0
         theLayers = []
-        zLayerPos = [5.5, 4.5, -4.5, -5.5]
+        zLayerPos = [10.5, 9.5, -9.5, -10.5]
         zDirLayer = [90.0, 0.0, 90.0, 0.0]
         for i, ilayer in enumerate(zLayerPos):
             theLayer = copy.copy(layer)
@@ -88,9 +88,11 @@ if __name__=='__main__':
             theLayer['zSizeLayer'] = 1.0
             theFibers = []
             NFibers = 27
+            coreRad = 0.25 # cm; core radius
+            cladRad = 0.35 # cm; cladding radius
             FiberPitch = 0.725 # cm; fiber outer diameter = 2 * (claddingRadius + jacket 0.01 cm)
-            FiberZsize = 0.8
-            FiberXsize = 0.8
+            FiberZsize = 2 * (cladRad + 0.01)
+            FiberXsize = 2 * (cladRad + 0.01)
             FiberYsize = theLayer['ySizeLayer']
             # Layers measuring the same axis (0-2 and 1-3) are offset by half a fiber pitch to avoid gaps in the coverage
             shift = -FiberPitch / 4.0 if i < 2 else FiberPitch / 4.0
@@ -108,8 +110,8 @@ if __name__=='__main__':
                 theFiber['xSizeSensor'] = FiberXsize
                 theFiber['ySizeSensor'] = FiberYsize
                 theFiber['zSizeSensor'] = FiberZsize
-                theFiber['coreRadius'] = 0.25
-                theFiber['claddingRadius'] = 0.35
+                theFiber['coreRadius'] = coreRad
+                theFiber['claddingRadius'] = cladRad
                 theFiber['length'] = FiberYsize/2.0
                 theFiber['coreMaterial'] = 'EJ204'
                 theFiber['claddingMaterial'] = 'scint_clad'
