@@ -43,6 +43,7 @@ MyPhysicsList::MyPhysicsList() : G4VModularPhysicsList() {
 	RegisterPhysics( new G4NeutronTrackingCut );     
 	RegisterPhysics( new G4RadioactiveDecayPhysics);  
 	RegisterPhysics( new G4OpticalPhysics );
+	G4OpticalParameters::Instance()->SetScintFiniteRiseTime(true);  // Use the rise time of the scintillator (default: false)
 
 }
 //----------------------------------------------------------------------//

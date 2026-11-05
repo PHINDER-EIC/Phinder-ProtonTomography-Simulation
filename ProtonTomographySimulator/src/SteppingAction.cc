@@ -13,6 +13,22 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
+//-----------------------------------------------------------------------//
+// Optical device (index-matched) coupled to the fiber ends: photons     //
+// reflected at a fiber end (core/cladding -> outside) are killed, so    //
+// they cannot bounce and leave through the other end.                   //
+// Comment this line and next one to allow reflections at the fiber ends.//
+//-----------------------------------------------------------------------//
+// #define KILL_REFLECTED_AT_FIBER_ENDS
+
+//----------------------------------------------------------------------//
+// Ideal index-matched coupling at the fiber ends: every photon that    //
+// reaches a fiber end is stored and killed, whether Geant4 refracts or //
+// reflects it at the fiber-air boundary (there is no real interface).  //
+// When defined, KILL_REFLECTED_AT_FIBER_ENDS has no effect.            //
+//----------------------------------------------------------------------//
+#define INDEX_MATCHED_FIBER_ENDS
+
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
@@ -67,7 +83,17 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
             }
         }
     }
-    if(boundary == nullptr || boundary->GetStatus() != FresnelRefraction) return;
+    if(boundary == nullptr) return;
+#ifndef INDEX_MATCHED_FIBER_ENDS
+    if(boundary->GetStatus() != FresnelRefraction) {
+#ifdef KILL_REFLECTED_AT_FIBER_ENDS
+        //The photon reached a fiber end but was reflected back (total internal or Fresnel reflection):
+        //it is absorbed by the optical device coupled to the fiber end, so it is killed and not stored
+        track->SetTrackStatus(fStopAndKill);
+#endif
+        return;
+    }
+#endif
 
     //Fiber identifiers from the copy number of the volume the photon leaves
     const G4VTouchable *touchable = pre->GetTouchable();
@@ -86,8 +112,13 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
     G4ThreeVector pos = post->GetPosition();
     G4ThreeVector localPos = toLocal.TransformPoint(pos);
     G4ThreeVector dirIn = toLocal.TransformAxis(pre->GetMomentumDirection());
+#ifdef INDEX_MATCHED_FIBER_ENDS
+    G4ThreeVector dirOut = dirIn; //The photon is transmitted through the fiber end without refraction
+    G4ThreeVector localPol = toLocal.TransformAxis(pre->GetPolarization());
+#else
     G4ThreeVector dirOut = toLocal.TransformAxis(post->GetMomentumDirection());
     G4ThreeVector localPol = toLocal.TransformAxis(post->GetPolarization());
+#endif
     G4double energy = post->GetKineticEnergy();
 
     //Fiber end through which the photon leaves: +1 (z>0) or -1 (z<0)
