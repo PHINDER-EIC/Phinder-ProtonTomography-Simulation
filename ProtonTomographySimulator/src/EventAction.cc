@@ -3,6 +3,9 @@
 
 #include "G4AnalysisManager.hh"
 
+#include <algorithm>
+#include <cfloat>
+
 #include "Analysis.hh"
 #include "G4Run.hh"
 #include "G4Event.hh"
@@ -15,6 +18,7 @@
 #include "G4SDManager.hh"
 #include "G4UImanager.hh"
 #include "G4ios.hh"
+#include "NanowireReadout.hh"
 
 #include "FiberSensorHit.hh"
 
@@ -32,9 +36,10 @@
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
-EventAction::EventAction(ConfigurationGeometry *geom_) {
+EventAction::EventAction(ConfigurationGeometry *geom_, NanowireReadout *readout_) {
 
     geom = geom_;
+    readout = readout_;
     G4String colName;
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
     G4int numberOfDetectors = SDman->GetCollectionCapacity();
@@ -66,7 +71,9 @@ EventAction::~EventAction() {
 //----------------------------------------------------------------------//
 // Begin of the event                                                   //
 //----------------------------------------------------------------------//
-void EventAction::BeginOfEventAction(const G4Event*) {}
+void EventAction::BeginOfEventAction(const G4Event*) {
+    readout->Reset();
+}
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
 
@@ -83,6 +90,8 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
     std::vector<FiberSensorHitsCollections> DHCs;
     //G4SDManager* SDman = G4SDManager::GetSDMpointer();
     if(HCE) {
+        G4double tMin = DBL_MAX;
+        G4bool hayHits = false;
         for (auto i : DHCID) {
             FiberSensorHitsCollection *a = 0;
             a = (FiberSensorHitsCollection*)(HCE->GetHC(i));
@@ -96,6 +105,8 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
                 for(G4int hit = 0; hit < n_hit; hit++) {
                     FiberSensorHit* aHit = (*(i.at(0)))[hit];
                     if(aHit->GetEnergy() == 0) continue;
+                    tMin = std::min(tMin, aHit->GetTime()/CLHEP::ns);
+                    hayHits = true;
                     auto detID = aHit->GetDetectorID();
                     auto layerID = aHit->GetLayerID();
                     auto fiberID = aHit->GetFiberID();
@@ -119,6 +130,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
                 }
             }
         }
+        if (hayHits) {readout->SetReferenceTime(tMin); readout->FillNtuple(3, evt->GetEventID()); }
     }
 }
 //----------------------------------------------------------------------//

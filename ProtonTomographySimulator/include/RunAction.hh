@@ -5,11 +5,12 @@
 #include "globals.hh"
 
 class G4Run;
+class NanowireReadout;
 
 class RunAction : public G4UserRunAction
 {
 public:
-    RunAction(std::string);
+    RunAction(std::string, NanowireReadout *readout_);
     virtual ~RunAction();
 
     void BeginOfRunAction(const G4Run*);
@@ -17,6 +18,8 @@ public:
 
     std::string nameOfOutputFile;
 
+private:
+    NanowireReadout *readout;
 };
 
 

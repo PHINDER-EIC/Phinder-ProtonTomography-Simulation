@@ -86,6 +86,17 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
 
         killPhotons = root["Photons"].get("killPhotons", true).asBool();
 
+        // Nanowire default parameters --------------------------------------------
+
+        nwDt       = root["Nanowire"].get("dt", 0.005).asDouble();
+        nwTmax     = root["Nanowire"].get("tmax", 30.0).asDouble();
+        nwTauRise  = root["Nanowire"].get("tauRise", 0.6).asDouble();
+        nwTauDecay = root["Nanowire"].get("tauDecay", 1.0).asDouble();
+        nwResp     = root["Nanowire"].get("responsivity", 0.01).asDouble();   // nA/photon
+        nwTOffset  = root["Nanowire"].get("tOffset", 5.0).asDouble();
+        nwMinPhot  = root["Nanowire"].get("minPhotons", 1).asInt();
+        storeExitPhotons = root["Photons"].get("storeExitPhotons", true).asBool();
+
         //Definition of the Phantoms ----------------------------------------------
         const Json::Value Phantoms = root["Phantoms"];
         for(G4int iphan = 0; iphan < Phantoms.size(); ++iphan) {

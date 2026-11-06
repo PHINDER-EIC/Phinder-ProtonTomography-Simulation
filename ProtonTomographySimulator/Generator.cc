@@ -11,6 +11,7 @@
 #include "G4UIExecutive.hh"
 #include "StackingAction.hh"
 #include "SteppingAction.hh"
+#include "NanowireReadout.hh"
 
 #include <getopt.h>
 #include <stdio.h>
@@ -109,7 +110,11 @@ int main(int argc,char** argv) {
 
     runManager->SetUserAction(myPrimaryGeneratorAction);
 
-    RunAction *myRunAction = new RunAction(nameOfOutputFile);
+    NanowireReadout *readout = new NanowireReadout(geomConf->nwDt, geomConf->nwTmax,
+        geomConf->nwTauRise, geomConf->nwTauDecay, geomConf->nwResp,
+        geomConf->nwTOffset, geomConf->nwMinPhot);
+
+    RunAction *myRunAction = new RunAction(nameOfOutputFile, readout);
     if(myRunAction == NULL) {
         G4cerr << "\033[1;31m" << "Problems in RunAction" << "\033[0m" << G4endl;
         return -1;
@@ -117,7 +122,7 @@ int main(int argc,char** argv) {
 
     runManager->SetUserAction(myRunAction);
 
-    EventAction *myEventAction = new EventAction(geomConf);
+    EventAction *myEventAction = new EventAction(geomConf, readout);
     if(myEventAction == NULL) {
         G4cerr << "\033[1;31m" << "Problems in EventAction" << "\033[0m" << G4endl;
         return -1;
@@ -132,7 +137,7 @@ int main(int argc,char** argv) {
     StackingAction *myStackingAction = new StackingAction(killPhotons);
     runManager->SetUserAction(myStackingAction);
 
-    SteppingAction *mySteppingAction = new SteppingAction();
+    SteppingAction *mySteppingAction = new SteppingAction(readout, geomConf->storeExitPhotons);
     runManager->SetUserAction(mySteppingAction);
 
     G4VisManager* visManager = new G4VisExecutive;
@@ -152,7 +157,8 @@ int main(int argc,char** argv) {
     delete geomConf;
     delete visManager;
     delete runManager;
-    
+    delete readout;
+
     G4cout << "The program finished successfully" << G4endl;
     
     

@@ -17,10 +17,11 @@ using namespace AIDA;
 
 class EventActionMessenger;
 
+class NanowireReadout;
 
 class EventAction : public G4UserEventAction {
 public:
-    EventAction(ConfigurationGeometry *);
+    EventAction(ConfigurationGeometry *, NanowireReadout *readout_);
     virtual ~EventAction();
 
 public:
@@ -33,6 +34,7 @@ private:
     EventActionMessenger *messenger;
     ConfigurationGeometry *geom;
     G4int verboseLevel;
+    NanowireReadout *readout;
 
 public:
     inline void SetVerbose(G4int val) {

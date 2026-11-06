@@ -65,6 +65,9 @@ public:
     std::vector <G4String> collections;
 
     G4bool killPhotons;
+    G4bool storeExitPhotons;
+    G4double nwDt, nwTmax, nwTauRise, nwTauDecay, nwResp, nwTOffset;
+    G4int nwMinPhot;
     
     void Print();
 

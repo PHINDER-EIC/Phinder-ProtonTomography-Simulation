@@ -5,17 +5,20 @@
 #include "globals.hh"
 
 class G4OpBoundaryProcess;
+class NanowireReadout;
 
 class SteppingAction : public G4UserSteppingAction {
 
 public:
-    SteppingAction();
+    SteppingAction(NanowireReadout *readout_, G4bool storeExitPhotons_);
     virtual ~SteppingAction();
 
     virtual void UserSteppingAction(const G4Step *);
 
 private:
     G4OpBoundaryProcess *boundary;
+    NanowireReadout *readout;
+    G4bool storeExitPhotons;
 };
 
 #endif

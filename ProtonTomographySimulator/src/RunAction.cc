@@ -2,6 +2,7 @@
 #include "G4AnalysisManager.hh"
 
 #include "Analysis.hh"
+#include "NanowireReadout.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -12,8 +13,9 @@
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
-RunAction::RunAction(std::string name) {
+RunAction::RunAction(std::string name, NanowireReadout *readout_) {
     nameOfOutputFile = name;
+    readout = readout_;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -112,6 +114,18 @@ void RunAction::BeginOfRunAction(const G4Run* run) {
     man->CreateNtupleDColumn("wavelength");
     man->CreateNtupleDColumn("time");
     man->CreateNtupleDColumn("trackLength");
+    man->FinishNtuple();
+
+    // Ntuple 3: current at fiber's ends
+    man->CreateNtuple("nwCurrent", "Nanowire current per fiber end");
+    man->CreateNtupleIColumn("eventNumber");
+    man->CreateNtupleIColumn("det");
+    man->CreateNtupleIColumn("layer");
+    man->CreateNtupleIColumn("fiber");
+    man->CreateNtupleIColumn("side");
+    man->CreateNtupleIColumn("nPhotons");
+    man->CreateNtupleDColumn("tRef");
+    man->CreateNtupleFColumn("current", readout->CurrentBuffer());   // vector<float>, nTime muestras [nA]
     man->FinishNtuple();
 
 }

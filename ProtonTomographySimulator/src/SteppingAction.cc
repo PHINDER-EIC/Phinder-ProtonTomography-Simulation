@@ -12,6 +12,7 @@
 #include "G4OpticalPhoton.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "NanowireReadout.hh"
 
 //-----------------------------------------------------------------------//
 // Optical device (index-matched) coupled to the fiber ends: photons     //
@@ -32,8 +33,10 @@
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
-SteppingAction::SteppingAction() {
+SteppingAction::SteppingAction(NanowireReadout *readout_, G4bool storeExitPhotons_) {
     boundary = nullptr;
+    readout = readout_;
+    storeExitPhotons = storeExitPhotons_;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -126,6 +129,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
 
     auto man = G4AnalysisManager::Instance();
     G4int id = 2;
+    if(storeExitPhotons) {
     man->FillNtupleIColumn(id, 0, G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID());
     man->FillNtupleIColumn(id, 1, det);
     man->FillNtupleIColumn(id, 2, layer);
@@ -155,9 +159,13 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
     man->FillNtupleDColumn(id, 26, post->GetGlobalTime()/CLHEP::ns);
     man->FillNtupleDColumn(id, 27, track->GetTrackLength()/CLHEP::cm);
     man->AddNtupleRow(id);
+    }
+
+    readout->AddPhoton(det, layer, fiber, side, post->GetGlobalTime()/CLHEP::ns);
 
     //Ideal detector: the photon is absorbed once it leaves the fiber (comentar para simular los fotones fuera de la fibra)
     track->SetTrackStatus(fStopAndKill);
+    
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//

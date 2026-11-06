@@ -121,11 +121,22 @@ if __name__=='__main__':
         theDet['Layers'] = theLayers
         theDetectors.append(theDet)
 
+    #Nanowire readout (photons at the fiber ends -> current in nA)
+    nanowire = dict()
+    nanowire['dt'] = 0.005          # ns, same as FIXED_DT of the network
+    nanowire['tmax'] = 30.0         # ns, must be a multiple of dt
+    nanowire['tauRise'] = 0.6       # ns
+    nanowire['tauDecay'] = 1.0      # ns
+    nanowire['responsivity'] = 0.01 # nA per photon
+    nanowire['tOffset'] = 5.0       # ns, time of the first hit of the event inside the window
+    nanowire['minPhotons'] = 1
+    photons['storeExitPhotons'] = True   # False to save disk once validated
 
     newData = dict()
     newData['theWorld'] = theWorld
     newData['theBeam'] = theBeam
     newData['Photons'] = photons
+    newData['Nanowire'] = nanowire
     newData['Phantoms'] = thePhantoms
     newData['Detectors'] = theDetectors
 
