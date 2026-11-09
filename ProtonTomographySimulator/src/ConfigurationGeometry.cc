@@ -96,7 +96,7 @@ ConfigurationGeometry::ConfigurationGeometry(G4String file) {
         nwTOffset  = root["Nanowire"].get("tOffset", 5.0).asDouble();
         nwMinPhot  = root["Nanowire"].get("minPhotons", 1).asInt();
         storeExitPhotons = root["Photons"].get("storeExitPhotons", true).asBool();
-
+        storePhotons = root["Photons"].get("storePhotons", true).asBool();
         //Definition of the Phantoms ----------------------------------------------
         const Json::Value Phantoms = root["Phantoms"];
         for(G4int iphan = 0; iphan < Phantoms.size(); ++iphan) {

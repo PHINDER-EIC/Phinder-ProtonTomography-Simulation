@@ -134,7 +134,7 @@ int main(int argc,char** argv) {
     G4bool killPhotons = geomConf->killPhotons;
     if(killPhotonsOption != -1) killPhotons = (killPhotonsOption == 1);
     G4cout << "\033[1;34m" << "Optical photons are " << (killPhotons ? "killed" : "tracked") << " after being stored" << "\033[0m" << G4endl;
-    StackingAction *myStackingAction = new StackingAction(killPhotons);
+    StackingAction *myStackingAction = new StackingAction(killPhotons, geomConf->storePhotons);
     runManager->SetUserAction(myStackingAction);
 
     SteppingAction *mySteppingAction = new SteppingAction(readout, geomConf->storeExitPhotons);

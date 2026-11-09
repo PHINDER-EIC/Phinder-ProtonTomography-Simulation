@@ -13,8 +13,9 @@
 //----------------------------------------------------------------------//
 // Constructor                                                          //
 //----------------------------------------------------------------------//
-StackingAction::StackingAction(G4bool kill) {
+StackingAction::StackingAction(G4bool kill, G4bool storePhotons_) {
     killOpticalPhotons = kill;
+    storePhotons = storePhotons_;
 }
 //----------------------------------------------------------------------//
 //----------------------------------------------------------------------//
@@ -60,6 +61,7 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track *track
     G4ThreeVector localPol = toLocal.TransformAxis(track->GetPolarization());
     G4double energy = track->GetKineticEnergy();
 
+    if(storePhotons){
     auto man = G4AnalysisManager::Instance();
     G4int id = 1;
     man->FillNtupleIColumn(id, 0, G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID());
@@ -85,6 +87,7 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track *track
     man->FillNtupleDColumn(id, 20, CLHEP::h_Planck*CLHEP::c_light/energy/CLHEP::nm);
     man->FillNtupleDColumn(id, 21, track->GetGlobalTime()/CLHEP::ns);
     man->AddNtupleRow(id);
+    }
 
     return killOpticalPhotons ? fKill : fUrgent;
 }

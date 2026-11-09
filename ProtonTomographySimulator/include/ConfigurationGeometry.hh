@@ -66,6 +66,7 @@ public:
 
     G4bool killPhotons;
     G4bool storeExitPhotons;
+    G4bool storePhotons;
     G4double nwDt, nwTmax, nwTauRise, nwTauDecay, nwResp, nwTOffset;
     G4int nwMinPhot;
     
